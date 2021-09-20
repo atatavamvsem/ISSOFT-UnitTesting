@@ -3,7 +3,6 @@ package shop;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VirtualItemTest {
@@ -22,12 +21,8 @@ public class VirtualItemTest {
             "image, 1, 2",
             "file, 2, 3"
     })
-    public void checkValidVirtualItem(String name, double price, double size){
+    public void checkToStringOutput(String name, double price, double size){
         VirtualItem item = createValidVirtualItem(name, price, size);
-        assertAll("valid item",
-                () -> assertEquals(name, item.getName()),
-                () -> assertEquals(price, item.getPrice()),
-                () -> assertEquals(size, item.getSizeOnDisk())
-        );
+        assertEquals(item.toString(), String.format("Class: %s; Name: %s; Price: %s; Size on disk: %s", item.getClass(), name, price, size), "Strings do not match");
     }
 }

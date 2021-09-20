@@ -3,7 +3,6 @@ package shop;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RealItemTest {
@@ -22,12 +21,8 @@ public class RealItemTest {
             "boat, 1000, 2000",
             "table, 20, 30"
     })
-    public void checkValidRealItem(String name, double price, double weight){
+    public void checkToStringOutput(String name, double price, double weight) {
         RealItem item = createValidRealItem(name, price, weight);
-        assertAll("valid item",
-                () -> assertEquals(name, item.getName()),
-                () -> assertEquals(price, item.getPrice()),
-                () -> assertEquals(weight, item.getWeight())
-        );
+        assertEquals(item.toString(), String.format("Class: %s; Name: %s; Price: %s; Weight: %s", item.getClass(), name, price, weight), "Strings do not match");
     }
 }

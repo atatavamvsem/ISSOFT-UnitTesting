@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import shop.Cart;
 import shop.CartTest;
 
-import java.io.File;
+import java.io.*;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +28,7 @@ class JsonParserTest {
 
     @BeforeEach
     public void beforeEach() {
-        cart = CartTest.createCart("test");
+        cart = CartTest.createCart(UUID.randomUUID().toString());
     }
 
     @AfterEach
@@ -39,27 +41,44 @@ class JsonParserTest {
     public void checkWritingData() {
         parser.writeToFile(cart);
         Cart savedCart = parser.readFromFile(new File("src/main/resources/" + cart.getCartName() + ".json"));
-        assertEquals(cart.getCartName(), savedCart.getCartName());
-        assertEquals(gson.toJson(cart), gson.toJson(savedCart));
+
+        assertAll("valid data from file",
+                () -> assertEquals(cart.getCartName(), savedCart.getCartName()),
+                () -> assertEquals(gson.toJson(cart), gson.toJson(savedCart))
+        );
+    }
+
+    /*I don't know if that approach is correct
+    Can I mark that this method can throw an exception?
+    Can I compare Json instead of String? */
+    @ParameterizedTest
+    @ValueSource(strings = {"src/main/resources/eugen-cart.json", "src/main/resources/andrew-cart.json"})
+    public void checkReadFile(String path) throws IOException {
+        Cart checkedCart = parser.readFromFile(new File(path));
+        String expectedCart = new BufferedReader(new FileReader(new File(path))).readLine();
+
+        assertTrue(gson.toJson(checkedCart).equals(expectedCart), "File reading is wrong");
     }
 
     @ParameterizedTest
     @CsvSource({
             "src/main/resources/e.json",
-            "src/main/resources/e1.json",
-            "src/eugen-cart.json",
-            "src/main/asd.json",
-            "src/main/111.json"
+            "D:\\projects\\UnitTesting-master\\src\\main\\resources\\e.json",
+            "A:eugen-cart.json",
+            "../Documents/Clients/contacts/eugen-cart.json",
+            "src\\main\\resources\\e.json",
+            "11\\...\\1212//\\e.json"
     })
-    public void throwExceptionReadFromFile(String path){
-        assertThrows(NoSuchFileException.class, () -> parser.readFromFile(new File(path)));
+    public void throwExceptionReadFromFile(String path) {
+        assertThrows(NoSuchFileException.class, () -> parser.readFromFile(new File(path)), "The exception was not thrown");
     }
 
     @Disabled("Disabled test")
     @Test
-    public void checkIfFileIsCreated(){
+    public void checkIfFileIsCreated() {
         parser.writeToFile(cart);
         File cartJson = new File("src/main/resources/" + cart.getCartName() + ".json");
-        assertTrue(cartJson.exists());
+
+        assertTrue(cartJson.exists(), "File doesn't exist");
     }
 }
