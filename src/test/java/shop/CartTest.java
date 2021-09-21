@@ -62,7 +62,7 @@ public class CartTest {
         cartWithDeletedVI.addVirtualItem(virtualItem);
         cartWithDeletedVI.deleteVirtualItem(virtualItem);
 
-        assertTrue(gson.toJson(cartWithoutVI).equals(gson.toJson(cartWithDeletedVI)), "Сarts do not match");
+        assertTrue(cartWithoutVI.getTotalPrice() == cartWithDeletedVI.getTotalPrice(), "Total price do not match");
     }
 
     @Test
@@ -75,6 +75,6 @@ public class CartTest {
         cartWithDeletedRI.addRealItem(realItem);
         cartWithDeletedRI.deleteRealItem(realItem);
 
-        assertTrue(gson.toJson(cartWithoutRI).equals(gson.toJson(cartWithDeletedRI)), "Сarts do not match");
+        assertTrue(cartWithoutRI.getTotalPrice() == cartWithDeletedRI.getTotalPrice(), "Total price do not match");
     }
 }

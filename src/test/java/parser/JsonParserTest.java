@@ -48,16 +48,17 @@ class JsonParserTest {
         );
     }
 
-    /*I don't know if that approach is correct
-    Can I mark that this method can throw an exception?
-    Can I compare Json instead of String? */
-    @ParameterizedTest
-    @ValueSource(strings = {"src/main/resources/eugen-cart.json", "src/main/resources/andrew-cart.json"})
-    public void checkReadFile(String path) throws IOException {
-        Cart checkedCart = parser.readFromFile(new File(path));
-        String expectedCart = new BufferedReader(new FileReader(new File(path))).readLine();
+    @Test
+    public void checkReadFile() {
+        try (FileWriter writer = new FileWriter("src/main/resources/" + cart.getCartName() + ".json")) {
+            writer.write(gson.toJson(cart));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        assertTrue(gson.toJson(checkedCart).equals(expectedCart), "File reading is wrong");
+        Cart checkedCart = parser.readFromFile(new File("src/main/resources/" + cart.getCartName() + ".json"));
+
+        assertTrue(gson.toJson(checkedCart).equals(gson.toJson(cart)), "File reading is wrong");
     }
 
     @ParameterizedTest
