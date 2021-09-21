@@ -1,17 +1,14 @@
 package parser;
 
 import com.google.gson.Gson;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.testng.annotations.*;
 import shop.Cart;
 import shop.CartTest;
 
 import java.io.*;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.testng.Assert.*;
 
 class JsonParserTest {
 
@@ -20,18 +17,18 @@ class JsonParserTest {
 
     private Cart cart;
 
-    @BeforeAll
+    @BeforeGroups(groups = "writing")
     public static void before() {
         gson = new Gson();
         parser = new JsonParser();
     }
 
-    @BeforeEach
+    @BeforeMethod(groups = "writing")
     public void beforeEach() {
         cart = CartTest.createCart(UUID.randomUUID().toString());
     }
 
-    @AfterEach
+    @AfterMethod
     public void afterEach() {
         File cartJson = new File("src/main/resources/" + cart.getCartName() + ".json");
         cartJson.deleteOnExit();
@@ -42,10 +39,9 @@ class JsonParserTest {
         parser.writeToFile(cart);
         Cart savedCart = parser.readFromFile(new File("src/main/resources/" + cart.getCartName() + ".json"));
 
-        assertAll("valid data from file",
-                () -> assertEquals(cart.getCartName(), savedCart.getCartName()),
-                () -> assertEquals(gson.toJson(cart), gson.toJson(savedCart))
-        );
+        assertEquals(cart.getCartName(), savedCart.getCartName());
+        assertEquals(gson.toJson(cart), gson.toJson(savedCart));
+
     }
 
     @Test
@@ -61,21 +57,24 @@ class JsonParserTest {
         assertTrue(gson.toJson(checkedCart).equals(gson.toJson(cart)), "File reading is wrong");
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "src/main/resources/e.json",
-            "D:\\projects\\UnitTesting-master\\src\\main\\resources\\e.json",
-            "A:eugen-cart.json",
-            "../Documents/Clients/contacts/eugen-cart.json",
-            "src\\main\\resources\\e.json",
-            "11\\...\\1212//\\e.json"
-    })
-    public void throwExceptionReadFromFile(String path) {
-        assertThrows(NoSuchFileException.class, () -> parser.readFromFile(new File(path)), "The exception was not thrown");
+    @DataProvider
+    public Object[][] createCartNames() {
+        return new Object[][]{
+                {"src/main/resources/e.json"},
+                {"D:\\projects\\UnitTesting-master\\src\\main\\resources\\e.json"},
+                {"A:eugen-cart.json"},
+                {"../Documents/Clients/contacts/eugen-cart.json"},
+                {"src\\main\\resources\\e.json"},
+                {"11\\...\\1212//\\e.json"},
+        };
     }
 
-    @Disabled("Disabled test")
-    @Test
+    @Test(dataProvider = "createCartNames", expectedExceptions = {NoSuchFileException.class})
+    public void throwExceptionReadFromFile(String path) {
+        parser.readFromFile(new File(path));
+    }
+
+    @Test(groups = {"writing"})
     public void checkIfFileIsCreated() {
         parser.writeToFile(cart);
         File cartJson = new File("src/main/resources/" + cart.getCartName() + ".json");

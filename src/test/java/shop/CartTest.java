@@ -1,22 +1,21 @@
 package shop;
 
 import com.google.gson.Gson;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import static shop.RealItemTest.createValidRealItem;
 import static shop.VirtualItemTest.createValidVirtualItem;
 
 public class CartTest {
     private static Gson gson;
 
-    @BeforeAll
+    @BeforeSuite
     public static void before() {
         gson = new Gson();
     }
@@ -39,8 +38,15 @@ public class CartTest {
         return cart;
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"test1", "test2", "test3"})
+    @DataProvider
+    public Object[][] createCartNames() {
+        return new Object[][] {
+                { "Cedric"},
+                { "Anne"},
+        };
+    }
+
+    @Test(dataProvider = "createCartNames")
     public void checkValidVirtualItem(String name) {
         Cart cart = createCart(name);
         assertEquals(name, cart.getCartName(), "The name is wrong");

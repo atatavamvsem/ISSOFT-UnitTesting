@@ -1,9 +1,9 @@
 package shop;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class RealItemTest {
 
@@ -16,11 +16,15 @@ public class RealItemTest {
         return real;
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "boat, 1000, 2000",
-            "table, 20, 30"
-    })
+    @DataProvider
+    public Object[][] createRealItem() {
+        return new Object[][] {
+                { "boat", 23, 34},
+                { "table", 44, 44},
+        };
+    }
+
+    @Test(dataProvider = "createRealItem")
     public void checkToStringOutput(String name, double price, double weight) {
         RealItem item = createValidRealItem(name, price, weight);
         assertEquals(item.toString(), String.format("Class: %s; Name: %s; Price: %s; Weight: %s", item.getClass(), name, price, weight), "Strings do not match");
