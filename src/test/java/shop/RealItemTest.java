@@ -18,9 +18,9 @@ public class RealItemTest {
 
     @DataProvider
     public Object[][] createRealItem() {
-        return new Object[][] {
-                { "boat", 23, 34},
-                { "table", 44, 44},
+        return new Object[][]{
+                {"boat", 23, 34},
+                {"table", 44, 44},
         };
     }
 

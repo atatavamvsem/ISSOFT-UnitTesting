@@ -1,29 +1,34 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 
-<suite name="Test suite 1" verbose="1" >
-    <test name="Cart tests" >
+<suite name="Test suite 1" verbose="1" parallel="methods" thread-count="3">
+    <test name="Cart tests">
         <classes>
             <class name="shop.CartTest">
                 <methods>
-                    <include name="checkValidVirtualItem" />
-                    <include name="checkTotalPrice" />
+                    <include name="checkValidVirtualItem"/>
+                    <include name="checkTotalPrice"/>
                 </methods>
             </class>
         </classes>
     </test>
-    <test name="Parser tests" >
+    <test name="Parser tests">
         <classes>
-            <class name="parser.JsonParserTest" />
+            <class name="parser.JsonParserTest"/>
         </classes>
     </test>
-    <test name="Virtual item tests" >
+
+    <parameter name="name" value="Boat"/>
+    <parameter name="price" value="58"/>
+    <parameter name="size" value="45"/>
+    <test name="Virtual item tests">
         <classes>
-            <class name="shop.VirtualItemTest" />
+            <class name="shop.VirtualItemTest"/>
         </classes>
     </test>
-    <test name="Real item tests" >
+
+    <test name="Real item tests">
         <classes>
-            <class name="shop.RealItemTest" />
+            <class name="shop.RealItemTest"/>
         </classes>
     </test>
 </suite>

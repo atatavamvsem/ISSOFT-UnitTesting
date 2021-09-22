@@ -1,6 +1,7 @@
 package shop;
 
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -18,14 +19,15 @@ public class VirtualItemTest {
 
     @DataProvider
     public Object[][] createVirtualItem() {
-        return new Object[][] {
-                { "file", 23, 34},
-                { "image", 400, 450},
+        return new Object[][]{
+                {"file", 23, 34},
+                {"image", 400, 450},
         };
     }
 
-    @Test(dataProvider = "createVirtualItem", groups = {"shop.virtualItem"})
-    public void checkToStringOutput(String name, double price, double size){
+    @Parameters({"name", "price", "size"})
+    @Test(groups = {"shop.virtualItem"})
+    public void checkToStringOutput(String name, double price, double size) {
         VirtualItem item = createValidVirtualItem(name, price, size);
         assertEquals(item.toString(), String.format("Class: %s; Name: %s; Price: %s; Size on disk: %s", item.getClass(), name, price, size), "Strings do not match");
     }

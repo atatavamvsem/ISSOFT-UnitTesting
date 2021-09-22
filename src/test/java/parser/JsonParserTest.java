@@ -2,6 +2,7 @@ package parser;
 
 import com.google.gson.Gson;
 import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
 import shop.Cart;
 import shop.CartTest;
 
@@ -16,6 +17,8 @@ class JsonParserTest {
     private static Gson gson;
 
     private Cart cart;
+
+    SoftAssert softAssert = new SoftAssert();
 
     @BeforeSuite(groups = {"writing", "reading", "parser.JsonParser"})
     public static void before() {
@@ -48,7 +51,9 @@ class JsonParserTest {
             e.printStackTrace();
         }
 
-        assertEquals(gson.toJson(cart), gson.toJson(checkedCart));
+        softAssert.assertEquals(cart.getCartName(), checkedCart.getCartName());
+        softAssert.assertEquals(gson.toJson(cart), gson.toJson(checkedCart));
+        softAssert.assertAll();
     }
 
     @Test(groups = {"reading", "parser.JsonParser"})

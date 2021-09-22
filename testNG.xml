@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 
-<suite name="Test suite" verbose="1" >
-    <test name="Unit tests" >
+<suite name="Test suite" verbose="1">
+    <test name="Unit tests">
         <groups>
             <run>
                 <exclude name="defect"/>
@@ -12,8 +12,8 @@
         </groups>
 
         <classes>
-            <class name="parser.JsonParserTest" />
-            <class name="shop.CartTest" />
+            <class name="parser.JsonParserTest"/>
+            <class name="shop.CartTest"/>
         </classes>
     </test>
 </suite>
