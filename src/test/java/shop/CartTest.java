@@ -13,12 +13,6 @@ import static shop.RealItemTest.createValidRealItem;
 import static shop.VirtualItemTest.createValidVirtualItem;
 
 public class CartTest {
-    private static Gson gson;
-
-    @BeforeSuite
-    public static void before() {
-        gson = new Gson();
-    }
 
     public static Cart createCart(String name) {
         Cart cart = new Cart(name);
@@ -40,25 +34,25 @@ public class CartTest {
 
     @DataProvider
     public Object[][] createCartNames() {
-        return new Object[][] {
-                { "Cedric"},
-                { "Anne"},
+        return new Object[][]{
+                {"Cedric"},
+                {"Anne"},
         };
     }
 
-    @Test(dataProvider = "createCartNames")
+    @Test(dataProvider = "createCartNames", groups = "shop.cart")
     public void checkValidVirtualItem(String name) {
         Cart cart = createCart(name);
         assertEquals(name, cart.getCartName(), "The name is wrong");
     }
 
-    @Test
+    @Test(groups = {"shop.cart"})
     public void checkTotalPrice() {
         Cart cart = createCart(UUID.randomUUID().toString());
         assertEquals(240, cart.getTotalPrice(), "The price is wrong");
     }
 
-    @Test
+    @Test(groups = {"shop.cart", "defect"})
     public void testDeleteVirtualItem() {
         Cart cartWithoutVI = createCartWithoutItems(UUID.randomUUID().toString());
         Cart cartWithDeletedVI = createCartWithoutItems(cartWithoutVI.getCartName());
@@ -71,7 +65,7 @@ public class CartTest {
         assertTrue(cartWithoutVI.getTotalPrice() == cartWithDeletedVI.getTotalPrice(), "Total price do not match");
     }
 
-    @Test
+    @Test(groups = {"shop.cart", "defect"})
     public void testDeleteRealItem() {
         Cart cartWithoutRI = createCartWithoutItems(UUID.randomUUID().toString());
         Cart cartWithDeletedRI = createCartWithoutItems(cartWithoutRI.getCartName());

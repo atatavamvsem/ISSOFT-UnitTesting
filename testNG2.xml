@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Test suite 2" verbose="1" >
+    <test name="Unit tests">
+        <groups>
+            <run>
+                <include name="shop.*"/>
+            </run>
+        </groups>
+
+        <classes>
+            <class name="shop.CartTest"/>
+            <class name="shop.VirtualItemTest"/>
+            <class name="shop.RealItemTest"/>
+        </classes>
+    </test>
+</suite>

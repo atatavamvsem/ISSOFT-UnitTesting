@@ -17,34 +17,41 @@ class JsonParserTest {
 
     private Cart cart;
 
-    @BeforeGroups(groups = "writing")
+    @BeforeSuite(groups = {"writing", "reading", "parser.JsonParser"})
     public static void before() {
         gson = new Gson();
         parser = new JsonParser();
     }
 
-    @BeforeMethod(groups = "writing")
+    @BeforeMethod(groups = {"writing", "reading", "parser.JsonParser"})
     public void beforeEach() {
         cart = CartTest.createCart(UUID.randomUUID().toString());
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"writing", "reading", "parser.JsonParser"})
     public void afterEach() {
         File cartJson = new File("src/main/resources/" + cart.getCartName() + ".json");
         cartJson.deleteOnExit();
     }
 
-    @Test
+    @Test(groups = {"writing", "parser.JsonParser"})
     public void checkWritingData() {
         parser.writeToFile(cart);
-        Cart savedCart = parser.readFromFile(new File("src/main/resources/" + cart.getCartName() + ".json"));
 
-        assertEquals(cart.getCartName(), savedCart.getCartName());
-        assertEquals(gson.toJson(cart), gson.toJson(savedCart));
+        Cart checkedCart = new Cart(UUID.randomUUID().toString());
 
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/" + cart.getCartName() + ".json"))) {
+            checkedCart = gson.fromJson(reader.readLine(), Cart.class);
+        } catch (FileNotFoundException ex) {
+            throw new NoSuchFileException(String.format("File %s.json not found!", cart.getCartName()), ex);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(gson.toJson(cart), gson.toJson(checkedCart));
     }
 
-    @Test
+    @Test(groups = {"reading", "parser.JsonParser"})
     public void checkReadFile() {
         try (FileWriter writer = new FileWriter("src/main/resources/" + cart.getCartName() + ".json")) {
             writer.write(gson.toJson(cart));
@@ -69,12 +76,12 @@ class JsonParserTest {
         };
     }
 
-    @Test(dataProvider = "createCartNames", expectedExceptions = {NoSuchFileException.class})
+    @Test(dataProvider = "createCartNames", groups = {"reading", "parser.JsonParser"}, expectedExceptions = {NoSuchFileException.class})
     public void throwExceptionReadFromFile(String path) {
         parser.readFromFile(new File(path));
     }
 
-    @Test(groups = {"writing"})
+    @Test(groups = {"writing", "parser.JsonParser"}, enabled = false)
     public void checkIfFileIsCreated() {
         parser.writeToFile(cart);
         File cartJson = new File("src/main/resources/" + cart.getCartName() + ".json");

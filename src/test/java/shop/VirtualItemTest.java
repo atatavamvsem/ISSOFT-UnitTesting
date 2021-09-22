@@ -24,7 +24,7 @@ public class VirtualItemTest {
         };
     }
 
-    @Test(dataProvider = "createVirtualItem")
+    @Test(dataProvider = "createVirtualItem", groups = {"shop.virtualItem"})
     public void checkToStringOutput(String name, double price, double size){
         VirtualItem item = createValidVirtualItem(name, price, size);
         assertEquals(item.toString(), String.format("Class: %s; Name: %s; Price: %s; Size on disk: %s", item.getClass(), name, price, size), "Strings do not match");

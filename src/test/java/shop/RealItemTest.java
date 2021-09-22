@@ -24,7 +24,7 @@ public class RealItemTest {
         };
     }
 
-    @Test(dataProvider = "createRealItem")
+    @Test(dataProvider = "createRealItem", groups = {"shop.realItem"})
     public void checkToStringOutput(String name, double price, double weight) {
         RealItem item = createValidRealItem(name, price, weight);
         assertEquals(item.toString(), String.format("Class: %s; Name: %s; Price: %s; Weight: %s", item.getClass(), name, price, weight), "Strings do not match");
