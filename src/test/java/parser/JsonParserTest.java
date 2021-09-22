@@ -38,14 +38,21 @@ class JsonParserTest {
     }
 
     @Test
+
     public void checkWritingData() {
         parser.writeToFile(cart);
-        Cart savedCart = parser.readFromFile(new File("src/main/resources/" + cart.getCartName() + ".json"));
 
-        assertAll("valid data from file",
-                () -> assertEquals(cart.getCartName(), savedCart.getCartName()),
-                () -> assertEquals(gson.toJson(cart), gson.toJson(savedCart))
-        );
+        Cart checkedCart = new Cart(UUID.randomUUID().toString());
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/" + cart.getCartName() + ".json"))) {
+            checkedCart = gson.fromJson(reader.readLine(), Cart.class);
+        } catch (FileNotFoundException ex) {
+            throw new NoSuchFileException(String.format("File %s.json not found!", cart.getCartName()), ex);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(gson.toJson(cart), gson.toJson(checkedCart));
     }
 
     @Test
